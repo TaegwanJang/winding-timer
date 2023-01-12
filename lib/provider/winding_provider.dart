@@ -18,6 +18,8 @@ class WindingProvider extends ChangeNotifier {
   WindingProvider(this.centerCoordinate);
 
   _onMove(WindingCoordinate tapCoordinate) {
+    if (!isMove.value) return;
+
     this.tapCoordinate = tapCoordinate;
 
     double dx = (tapCoordinate.x - centerCoordinate.x);
@@ -52,9 +54,60 @@ class WindingProvider extends ChangeNotifier {
     debugPrint('drag update :: angle :: ${this.angle.value}} $currentQuadrant');
   }
 
-  dragUpdatePosition(DragUpdateDetails details) {
+  handleDragUpdatePosition(DragUpdateDetails details) {
     _onMove(WindingCoordinate(
         x: details.localPosition.dx, y: details.localPosition.dy));
+  }
+
+  handleDragCancelled() {
+    isMove.value = false;
+  }
+
+  handleTapDown(
+      TapDownDetails details, double width, double height, double tapRange) {
+    double angle = this.angle.value;
+    double circleRadius = (height >= width) ? width / 2 : height / 2;
+    // print('why?? ${details.localPosition.dx} ${details.localPosition.dy}');
+
+    double centerX = width / 2;
+    double centerY = height / 2;
+    double vertexX = cos(angle * pi / 180 - pi / 2) * circleRadius + width / 2;
+    double vertexY = sin(angle * pi / 180 - pi / 2) * circleRadius + height / 2;
+
+    double rangeX = (cos(angle * pi / 180) * tapRange).abs();
+    double rangeY = (sin(angle * pi / 180) * tapRange).abs();
+
+    double minX;
+    double maxX;
+    double minY;
+    double maxY;
+
+    if (centerX >= vertexX) {
+      minX = vertexX - rangeX;
+      maxX = centerX + rangeX;
+    } else {
+      minX = centerX - rangeX;
+      maxX = vertexX + rangeX;
+    }
+
+    if (centerY >= vertexY) {
+      minY = vertexY - rangeY;
+      maxY = centerY + rangeY;
+    } else {
+      minY = centerY - rangeY;
+      maxY = vertexY + rangeY;
+    }
+
+    if (details.localPosition.dx >= minX && details.localPosition.dx <= maxX) {
+      if (details.localPosition.dy >= minY &&
+          details.localPosition.dy <= maxY) {
+        isMove.value = true;
+      }
+    }
+  }
+
+  handleTapCancelled() {
+    isMove.value = false;
   }
 
   int _getQuadrant(WindingCoordinate coordinate) {

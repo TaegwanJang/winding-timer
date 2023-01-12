@@ -5,6 +5,7 @@ class _SwipeGestureDetector extends StatelessWidget {
   final double width;
   final double height;
   final EdgeInsets padding;
+  final double secondHandWidth = 10;
 
   _SwipeGestureDetector({
     super.key,
@@ -16,23 +17,29 @@ class _SwipeGestureDetector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _provider = Provider.of<WindingProvider>(context);
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onVerticalDragUpdate: _provider.dragUpdatePosition,
-      onHorizontalDragUpdate: _provider.dragUpdatePosition,
-      child: Container(
-        width: width,
-        height: height,
-        padding: padding,
-        child: ValueListenableBuilder<double>(
-          valueListenable: _provider.angle,
-          builder: (_, angle, __) {
-            return TimerProgressWidget(
-              angle: angle,
-            );
-          },
+    return Padding(
+      padding: padding,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTapDown: (details) =>
+            _provider.handleTapDown(details, width, height, secondHandWidth),
+        onTapUp: (_) => _provider.handleTapCancelled(),
+        onVerticalDragUpdate: _provider.handleDragUpdatePosition,
+        onVerticalDragEnd: (_) => _provider.handleDragCancelled(),
+        onVerticalDragCancel: _provider.handleDragCancelled,
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: ValueListenableBuilder<double>(
+            valueListenable: _provider.angle,
+            builder: (_, angle, __) {
+              return TimerProgressWidget(
+                angle: angle,
+                secondHandWidth: secondHandWidth,
+              );
+            },
+          ),
         ),
-        // child: TimerProgressWidget(),
       ),
     );
   }
