@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tg.windingtimer.winding_timer">
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
    <application
         android:label="winding_timer"
         android:name="${applicationName}"

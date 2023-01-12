@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class WindingProvider extends ChangeNotifier {
   final WindingCoordinate centerCoordinate;
@@ -47,6 +48,7 @@ class WindingProvider extends ChangeNotifier {
     this.angle.value = angle + roation * 360;
     if (this.angle.value ~/ 6 != seconds.value) {
       seconds.value = this.angle.value ~/ 6;
+      if (seconds.value % 2 == 0) HapticFeedback.lightImpact();
     }
 
     prevCoordinate = this.tapCoordinate;
@@ -102,6 +104,7 @@ class WindingProvider extends ChangeNotifier {
       if (details.localPosition.dy >= minY &&
           details.localPosition.dy <= maxY) {
         isMove.value = true;
+        HapticFeedback.heavyImpact();
       }
     }
   }
