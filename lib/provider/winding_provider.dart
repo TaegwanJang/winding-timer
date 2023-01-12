@@ -7,6 +7,7 @@ class WindingProvider extends ChangeNotifier {
   final WindingCoordinate centerCoordinate;
   final isMove = ValueNotifier<bool>(false);
   final angle = ValueNotifier<double>(0);
+  final seconds = ValueNotifier<int>(0);
   WindingCoordinate prevCoordinate = WindingCoordinate();
   WindingCoordinate tapCoordinate = WindingCoordinate();
   int prevQuadrant = 1;
@@ -42,6 +43,9 @@ class WindingProvider extends ChangeNotifier {
     }
 
     this.angle.value = angle + roation * 360;
+    if (this.angle.value ~/ 6 != seconds.value) {
+      seconds.value = this.angle.value ~/ 6;
+    }
 
     prevCoordinate = this.tapCoordinate;
     prevQuadrant = currentQuadrant;

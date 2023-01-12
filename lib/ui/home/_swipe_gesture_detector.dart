@@ -1,12 +1,16 @@
 part of 'home_page.dart';
 
 class _SwipeGestureDetector extends StatelessWidget {
-  final Widget child;
   late WindingProvider _provider;
+  final double width;
+  final double height;
+  final EdgeInsets padding;
 
   _SwipeGestureDetector({
     super.key,
-    required this.child,
+    required this.width,
+    required this.height,
+    this.padding = EdgeInsets.zero,
   });
 
   @override
@@ -16,7 +20,20 @@ class _SwipeGestureDetector extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onVerticalDragUpdate: _provider.dragUpdatePosition,
       onHorizontalDragUpdate: _provider.dragUpdatePosition,
-      child: child,
+      child: Container(
+        width: width,
+        height: height,
+        padding: padding,
+        child: ValueListenableBuilder<double>(
+          valueListenable: _provider.angle,
+          builder: (_, angle, __) {
+            return TimerProgressWidget(
+              angle: angle,
+            );
+          },
+        ),
+        // child: TimerProgressWidget(),
+      ),
     );
   }
 }

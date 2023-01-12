@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:winding_timer/provider/winding_provider.dart';
+import 'package:winding_timer/ui/progress/timer_progress_widget.dart';
 
 part '_swipe_gesture_detector.dart';
+part '_time_counter.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -15,7 +18,7 @@ class HomePage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: LayoutBuilder(
-          builder: (context, constraints) {
+          builder: (_, constraints) {
             debugPrint(
                 'width, height :: (${constraints.maxWidth} , ${constraints.maxHeight})');
             double centerX = constraints.maxWidth / 2;
@@ -28,12 +31,15 @@ class HomePage extends StatelessWidget {
                   y: centerY,
                 ),
               ),
-              child: _SwipeGestureDetector(
-                child: SizedBox(
-                  width: constraints.maxWidth,
-                  height: constraints.maxWidth,
-                  child: _buildCrossWidget(),
-                ),
+              child: Column(
+                children: [
+                  _SwipeGestureDetector(
+                    width: constraints.maxWidth,
+                    height: constraints.maxWidth,
+                    padding: EdgeInsets.all(10),
+                  ),
+                  _TimeCounter(),
+                ],
               ),
             );
           },
